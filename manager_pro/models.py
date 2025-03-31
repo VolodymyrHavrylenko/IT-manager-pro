@@ -10,10 +10,7 @@ class Position(models.Model):
 
 
 class Team(models.Model):
-    name = models.CharField(
-        max_length=255,
-        unique=True
-    )
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
@@ -46,25 +43,16 @@ class Worker(AbstractUser):
 
 
 class Project(models.Model):
-    name = models.CharField(
-        max_length=255,
-        unique=True
-    )
+    name = models.CharField(max_length=255, unique=True)
     description = models.TextField(blank=True)
-    team = models.ManyToManyField(
-        Team,
-        related_name="projects",
-        blank=True)
+    team = models.ManyToManyField(Team, related_name="projects", blank=True)
 
     def __str__(self):
         return self.name
 
 
 class TaskType(models.Model):
-    name = models.CharField(
-        max_length=255,
-        unique=True
-    )
+    name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.name
@@ -82,9 +70,7 @@ class Task(models.Model):
     deadline = models.DateTimeField()
     is_complete = models.BooleanField(default=False)
     priority = models.CharField(
-        max_length=10,
-        choices=Priority.choices,
-        default=Priority.MEDIUM
+        max_length=10, choices=Priority.choices, default=Priority.MEDIUM
     )
     task_type = models.ForeignKey(
         TaskType,
@@ -93,10 +79,7 @@ class Task(models.Model):
         related_name="tasks",
     )
     assigned_to = models.ForeignKey(
-        Worker,
-        on_delete=models.SET_NULL,
-        null=True,
-        related_name="assigned_tasks"
+        Worker, on_delete=models.SET_NULL, null=True, related_name="assigned_tasks"
     )
     project = models.ForeignKey(
         Project,
@@ -105,7 +88,9 @@ class Task(models.Model):
     )
 
     def __str__(self):
-        assigned = self.assigned_to.get_full_name() if self.assigned_to else "Not Assigned"
+        assigned = (
+            self.assigned_to.get_full_name() if self.assigned_to else "Not Assigned"
+        )
         return (
             f"{self.name} ({self.get_priority_display()}) | "
             f"Deadline: {self.deadline.strftime('%Y-%m-%d')} | "
